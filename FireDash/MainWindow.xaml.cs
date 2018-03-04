@@ -123,6 +123,20 @@ namespace WpfApp1
         public MainWindow()
         {
             InitializeComponent();
+            this.KeyUp += new KeyEventHandler(MainWindow_KeyUp);
+            RefreshLists();
+        }
+
+        void MainWindow_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.F5)
+            {
+                RefreshLists();
+            }
+        }
+
+        void RefreshLists()
+        {
             OutboundDropListGrid.ItemsSource = DropLog.GetOutboundList();
             InboundDropListGrid.ItemsSource = DropLog.GetInboundList();
         }
