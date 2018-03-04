@@ -34,25 +34,28 @@ namespace WpfApp1
 
         public DateTime EventTime { get; set; }
         public string Application { get; set; }
+        public string SourceAddress { get; set; }
+        public string SourcePort { get; set; }
         public string DestAddress { get; set; }
         public string DestPort { get; set; }
         public string Protocol { get => _protocols[_protocol]; set => _protocol = value; }
 
-        public DropLogEntry(DateTime EventTime, String Application, String DestAddress, String DestPort, String Protocol)
+        public DropLogEntry(DateTime EventTime, String Application, String SourceAddress, String SourcePort, String DestAddress, String DestPort, String Protocol)
         {
             this.EventTime = EventTime;
             this.Application = Application;
+            this.SourceAddress = SourceAddress;
+            this.SourcePort = SourcePort;
             this.DestAddress = DestAddress;
             this.DestPort = DestPort;
             this.Protocol = Protocol;
         }
 
-        public DropLogEntry()
-        {
-        }
+        public DropLogEntry(){}
+
         override public string ToString()
         {
-            return String.Format("{0},{1},{2},{3},{4}", this.EventTime, this.Application, this.DestAddress, this.DestPort, this.Protocol);
+            return String.Format("{0},{1},{2},{3},{4},{5},{6}", this.EventTime, this.Application, this.SourceAddress, this.SourcePort, this.DestAddress, this.DestPort, this.Protocol);
         }
     }
 
@@ -77,6 +80,8 @@ namespace WpfApp1
                     switch (nodeName)
                     {
                         case "Application":
+                        case "SourceAddress":
+                        case "SourcePort":
                         case "DestAddress":
                         case "DestPort":
                         case "Protocol":
