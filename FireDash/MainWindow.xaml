@@ -7,7 +7,14 @@
         mc:Ignorable="d"
         Title="FireDash" Height="594" Width="1037">
     <Grid>
-        <DataGrid x:Name="InboundDropListGrid" Margin="10,10,10,0" CanUserReorderColumns="False" CanUserResizeRows="False" IsReadOnly="True" Height="273" VerticalAlignment="Top"/>
-        <DataGrid x:Name="OutboundDropListGrid" Margin="10,300,10,10" CanUserReorderColumns="False" CanUserResizeRows="False" IsReadOnly="True"/>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="114*"/>
+            <ColumnDefinition Width="8*"/>
+            <ColumnDefinition Width="25*"/>
+        </Grid.ColumnDefinitions>
+        <DataGrid x:Name="InboundDropListGrid" Margin="10,10,0,0" CanUserReorderColumns="False" CanUserResizeRows="False" IsReadOnly="True" Height="273" VerticalAlignment="Top" HorizontalAlignment="Left" Width="498"/>
+        <DataGrid x:Name="OutboundDropListGrid" Margin="10,300,0,10" CanUserReorderColumns="False" CanUserResizeRows="False" IsReadOnly="True" HorizontalAlignment="Left" Width="498"/>
+        <DataGrid x:Name="OutboundTop10Grid" Margin="513,300,10,10" Grid.ColumnSpan="3" CanUserReorderColumns="False" CanUserResizeRows="False" IsReadOnly="True"/>
+        <DataGrid x:Name="InboundTop10Grid" Margin="513,10,15,0" Grid.ColumnSpan="3" IsReadOnly="True" CanUserReorderColumns="False" CanUserResizeRows="False" Height="273" VerticalAlignment="Top"/>
     </Grid>
 </Window>

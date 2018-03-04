@@ -67,6 +67,25 @@ namespace WpfApp1
         }
     }
 
+    //Dictionaries don't implement IList, so we'll wrap it in a class
+    public class Top10Entry : IComparable<Top10Entry>
+    {
+        public string Address { get; set; }
+        public int Hits { get; set; }
+
+        public Top10Entry() { }
+        public Top10Entry(string address, int hits)
+        {
+            this.Address = address;
+            this.Hits = hits;
+        }
+
+        public int CompareTo(Top10Entry other)
+        {
+            return other.Hits - this.Hits;
+        }
+    }
+
     public class DropLog
     {
         public static List<DropLogEntry> GetList()
@@ -115,6 +134,54 @@ namespace WpfApp1
             var logList = DropLog.GetList();
             return logList.Where(entry => entry.Direction.Equals("Inbound")).ToList();
         }
+
+        public static List<Top10Entry> GetOutboundTop10()
+        {
+            var hitList = new List<Top10Entry>();
+            var outboundList = GetOutboundList();
+            Dictionary<string, int> addressHits = new Dictionary<string, int>();
+            foreach (var entry in outboundList)
+            {
+                if (addressHits.ContainsKey(entry.DestAddress))
+                {
+                    addressHits[entry.DestAddress] += 1;
+                }
+                else
+                {
+                    addressHits[entry.DestAddress] = 1;
+                }
+            }
+            foreach(var record in addressHits)
+            {
+                hitList.Add(new Top10Entry(record.Key, record.Value));
+            }
+            hitList.Sort();
+            return hitList;
+        }
+
+        public static List<Top10Entry> GetInboundTop10()
+        {
+            var hitList = new List<Top10Entry>();
+            var inboundList = GetInboundList();
+            Dictionary<string, int> addressHits = new Dictionary<string, int>();
+            foreach (var entry in inboundList)
+            {
+                if (addressHits.ContainsKey(entry.SourceAddress))
+                {
+                    addressHits[entry.SourceAddress] += 1;
+                }
+                else
+                {
+                    addressHits[entry.SourceAddress] = 1;
+                }
+            }
+            foreach (var record in addressHits)
+            {
+                hitList.Add(new Top10Entry(record.Key, record.Value));
+            }
+            hitList.Sort();
+            return hitList;
+        }
     }
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -124,11 +191,11 @@ namespace WpfApp1
         public MainWindow()
         {
             InitializeComponent();
-            this.KeyUp += new KeyEventHandler(MainWindow_KeyUp);
+            this.KeyDown += new KeyEventHandler(MainWindow_KeyDown);
             RefreshLists();
         }
 
-        void MainWindow_KeyUp(object sender, KeyEventArgs e)
+        void MainWindow_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.F5)
             {
@@ -140,6 +207,8 @@ namespace WpfApp1
         {
             OutboundDropListGrid.ItemsSource = DropLog.GetOutboundList();
             InboundDropListGrid.ItemsSource = DropLog.GetInboundList();
+            OutboundTop10Grid.ItemsSource = DropLog.GetOutboundTop10();
+            InboundTop10Grid.ItemsSource = DropLog.GetInboundTop10();
         }
     }
 }
