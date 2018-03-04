@@ -24,11 +24,19 @@ namespace WpfApp1
 {
     public class DropLogEntry
     {
-        public DateTime EventTime {get; set;}
-        public string Application {get; set;}
-        public string DestAddress {get; set;}
-        public string DestPort {get; set;}
-        public string Protocol {get; set;}
+        private Dictionary<String, String> _protocols = new Dictionary<String, String>
+        {
+            {"1", "ICMP" },
+            {"6", "TCP" },
+            {"17", "UDP" }
+        };
+        private string _protocol;
+
+        public DateTime EventTime { get; set; }
+        public string Application { get; set; }
+        public string DestAddress { get; set; }
+        public string DestPort { get; set; }
+        public string Protocol { get => _protocols[_protocol]; set => _protocol = value; }
 
         public DropLogEntry(DateTime EventTime, String Application, String DestAddress, String DestPort, String Protocol)
         {
