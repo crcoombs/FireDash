@@ -102,6 +102,18 @@ namespace WpfApp1
             }
             return logList;
         }
+
+        public static List<DropLogEntry> GetOutboundList()
+        {
+            var logList = DropLog.GetList();
+            return logList.Where(entry => entry.Direction.Equals("Outbound")).ToList();
+        }
+
+        public static List<DropLogEntry> GetInboundList()
+        {
+            var logList = DropLog.GetList();
+            return logList.Where(entry => entry.Direction.Equals("Inbound")).ToList();
+        }
     }
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -111,8 +123,8 @@ namespace WpfApp1
         public MainWindow()
         {
             InitializeComponent();
-            List<DropLogEntry> logList = DropLog.GetList();
-            DropListGrid.ItemsSource = logList;
+            OutboundDropListGrid.ItemsSource = DropLog.GetOutboundList();
+            InboundDropListGrid.ItemsSource = DropLog.GetInboundList();
         }
     }
 }

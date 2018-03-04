@@ -5,8 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApp1"
         mc:Ignorable="d"
-        Title="FireDash" Height="350" Width="525">
+        Title="FireDash" Height="594" Width="1037">
     <Grid>
-        <DataGrid x:Name="DropListGrid" Margin="10" CanUserReorderColumns="False" CanUserResizeRows="False" IsReadOnly="True"/>
+        <DataGrid x:Name="InboundDropListGrid" Margin="10,10,10,0" CanUserReorderColumns="False" CanUserResizeRows="False" IsReadOnly="True" Height="273" VerticalAlignment="Top"/>
+        <DataGrid x:Name="OutboundDropListGrid" Margin="10,300,10,10" CanUserReorderColumns="False" CanUserResizeRows="False" IsReadOnly="True"/>
     </Grid>
 </Window>
