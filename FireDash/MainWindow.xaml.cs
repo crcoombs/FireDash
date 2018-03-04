@@ -17,6 +17,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Xml;
+using System.Xml.Linq;
 
 namespace WpfApp1
 
@@ -58,58 +59,24 @@ namespace WpfApp1
             EventLogReader logReader = new EventLogReader(eventsQuery);
             for (int i = 0; i< 10; i++)
             {
+                DropLogEntry entry = new DropLogEntry();
                 EventRecord eventdetail = logReader.ReadEvent();
-                using (StringReader eventStringReader = new StringReader(eventdetail.ToXml()))
+                XElement eventElement = XElement.Parse(eventdetail.ToXml());
+                entry.EventTime = DateTime.Parse(eventElement.Descendants("{http://schemas.microsoft.com/win/2004/08/events/event}TimeCreated").Single().Attribute("SystemTime").Value);
+                foreach (XElement node in eventElement.Descendants("{http://schemas.microsoft.com/win/2004/08/events/event}Data"))
                 {
-                    using (XmlReader eventxmlReader = XmlReader.Create(eventStringReader))
+                    String nodeName = node.Attributes("Name").Single().Value;
+                    switch (nodeName)
                     {
-                        DropLogEntry newEntry = new DropLogEntry();
-                        while (eventxmlReader.Read())
-                        {
-                            String systemTime = eventxmlReader.GetAttribute("SystemTime");
-
-                            if (systemTime != null)
-                            {
-                                newEntry.EventTime = Convert.ToDateTime(systemTime);
-                            }
-                            switch (eventxmlReader.GetAttribute("Name"))
-                            {
-                                case "Application":
-                                    {
-                                        String applicationString = eventxmlReader.ReadElementContentAsString();
-                                        if(applicationString.Contains('\\'))
-                                        {
-                                            applicationString = applicationString.Split('\\').Last();
-                                        }
-                                        newEntry.Application = applicationString;
-                                        break;
-                                    }
-                                case "DestAddress":
-                                    {
-                                        newEntry.DestAddress = eventxmlReader.ReadElementContentAsString();
-                                        break;
-                                    }
-                                case "DestPort":
-                                    {
-                                        newEntry.DestPort = eventxmlReader.ReadElementContentAsString();
-                                        break;
-                                    }
-                                case "Protocol":
-                                    {
-                                        String protocolString = "UDP";
-                                        int protocolNum = eventxmlReader.ReadElementContentAsInt();
-                                        if(protocolNum == 6)
-                                        {
-                                            protocolString = "TCP";
-                                        }
-                                        newEntry.Protocol = protocolString;
-                                        break;
-                                    }
-                            }
-                        }
-                        logList.Add(newEntry);
+                        case "Application":
+                        case "DestAddress":
+                        case "DestPort":
+                        case "Protocol":
+                            entry.GetType().GetProperty(nodeName).SetValue(entry, node.Value);
+                            break;    
                     }
                 }
+                logList.Add(entry);
             }
             return logList;
         }
