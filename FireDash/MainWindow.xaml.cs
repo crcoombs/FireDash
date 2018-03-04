@@ -31,6 +31,12 @@ namespace WpfApp1
             {"17", "UDP" }
         };
         private string _protocol;
+        private Dictionary<String, String> _directions = new Dictionary<String, String>
+        {
+            {"%%14592", "Inbound" },
+            {"%%14593", "Outbound" }
+        };
+        private string _direction;
 
         public DateTime EventTime { get; set; }
         public string Application { get; set; }
@@ -39,8 +45,9 @@ namespace WpfApp1
         public string DestAddress { get; set; }
         public string DestPort { get; set; }
         public string Protocol { get => _protocols[_protocol]; set => _protocol = value; }
+        public string Direction { get => _directions[_direction]; set => _direction = value; }
 
-        public DropLogEntry(DateTime EventTime, String Application, String SourceAddress, String SourcePort, String DestAddress, String DestPort, String Protocol)
+        public DropLogEntry(DateTime EventTime, String Application, String SourceAddress, String SourcePort, String DestAddress, String DestPort, String Protocol, String Direction)
         {
             this.EventTime = EventTime;
             this.Application = Application;
@@ -49,13 +56,14 @@ namespace WpfApp1
             this.DestAddress = DestAddress;
             this.DestPort = DestPort;
             this.Protocol = Protocol;
+            this.Direction = Direction;
         }
 
         public DropLogEntry(){}
 
         override public string ToString()
         {
-            return String.Format("{0},{1},{2},{3},{4},{5},{6}", this.EventTime, this.Application, this.SourceAddress, this.SourcePort, this.DestAddress, this.DestPort, this.Protocol);
+            return String.Format("{0},{1},{2},{3},{4},{5},{6},{7}", this.EventTime, this.Application, this.SourceAddress, this.SourcePort, this.DestAddress, this.DestPort, this.Protocol, this.Direction);
         }
     }
 
@@ -80,13 +88,14 @@ namespace WpfApp1
                     switch (nodeName)
                     {
                         case "Application":
+                        case "Direction":
                         case "SourceAddress":
                         case "SourcePort":
                         case "DestAddress":
                         case "DestPort":
-                        case "Protocol":
+                        case "Protocol": 
                             entry.GetType().GetProperty(nodeName).SetValue(entry, node.Value);
-                            break;    
+                            break;
                     }
                 }
                 logList.Add(entry);
