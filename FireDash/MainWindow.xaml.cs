@@ -71,15 +71,16 @@ namespace WpfApp1
     {
         public static List<DropLogEntry> GetList()
         {
-            string query = "*[System/EventID=5152]";
+            var tenMinutes = DateTime.UtcNow.AddMinutes(-10).ToString("o");
+            var eventID = 5152;
+            string query = String.Format("*[System/EventID={0}] and *[System[TimeCreated[@SystemTime >= '{1}']]]", eventID, tenMinutes);
             EventLogQuery eventsQuery = new EventLogQuery("Security", PathType.LogName, query);
             eventsQuery.ReverseDirection = true;
             List<DropLogEntry> logList = new List<DropLogEntry>();
             EventLogReader logReader = new EventLogReader(eventsQuery);
-            for (int i = 0; i< 10; i++)
+            for (EventRecord eventdetail = logReader.ReadEvent(); eventdetail != null; eventdetail = logReader.ReadEvent())
             {
                 DropLogEntry entry = new DropLogEntry();
-                EventRecord eventdetail = logReader.ReadEvent();
                 XElement eventElement = XElement.Parse(eventdetail.ToXml());
                 entry.EventTime = DateTime.Parse(eventElement.Descendants("{http://schemas.microsoft.com/win/2004/08/events/event}TimeCreated").Single().Attribute("SystemTime").Value);
                 foreach (XElement node in eventElement.Descendants("{http://schemas.microsoft.com/win/2004/08/events/event}Data"))
