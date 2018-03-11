@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data;
+using System.Diagnostics;
 using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Windows;
@@ -76,15 +78,18 @@ namespace FireDash
 
     public class DropLog
     {
-        public static List<DropLogEntry> GetList()
+        public static ObservableCollection<DropLogEntry> GetList()
         {
             var tenMinutes = DateTime.UtcNow.AddMinutes(-10).ToString("o");
             var eventID = 5152;
             string query = String.Format("*[System/EventID={0}] and *[System[TimeCreated[@SystemTime >= '{1}']]]", eventID, tenMinutes);
-            EventLogQuery eventsQuery = new EventLogQuery("Security", PathType.LogName, query);
-            eventsQuery.ReverseDirection = true;
-            List<DropLogEntry> logList = new List<DropLogEntry>();
+            EventLogQuery eventsQuery = new EventLogQuery("Security", PathType.LogName, query)
+            {
+                ReverseDirection = true
+            };
+            ObservableCollection<DropLogEntry> logList = new ObservableCollection<DropLogEntry>();
             EventLogReader logReader = new EventLogReader(eventsQuery);
+            Trace.TraceInformation("Query successful.");
             for (EventRecord eventdetail = logReader.ReadEvent(); eventdetail != null; eventdetail = logReader.ReadEvent())
             {
                 DropLogEntry entry = new DropLogEntry();
@@ -111,20 +116,21 @@ namespace FireDash
             return logList;
         }
 
-        public static List<DropLogEntry> GetOutboundList()
+        public static ObservableCollection<DropLogEntry> GetOutboundList()
         {
             var logList = DropLog.GetList();
-            return logList.Where(entry => entry.Direction.Equals("Outbound")).ToList();
+            return new ObservableCollection<DropLogEntry>(logList.Where(entry => entry.Direction.Equals("Outbound")));
         }
 
-        public static List<DropLogEntry> GetInboundList()
+        public static ObservableCollection<DropLogEntry> GetInboundList()
         {
             var logList = DropLog.GetList();
-            return logList.Where(entry => entry.Direction.Equals("Inbound")).ToList();
+            return new ObservableCollection<DropLogEntry>(logList.Where(entry => entry.Direction.Equals("Inbound")));
         }
 
-        public static List<Top10Entry> GetOutboundTop10()
+        public static ObservableCollection<Top10Entry> GetOutboundTop10()
         {
+            //List needed here because there's no sort method for ObservableCollections
             var hitList = new List<Top10Entry>();
             var outboundList = GetOutboundList();
             Dictionary<string, int> addressHits = new Dictionary<string, int>();
@@ -144,10 +150,10 @@ namespace FireDash
                 hitList.Add(new Top10Entry(record.Key, record.Value));
             }
             hitList.Sort();
-            return hitList;
+            return new ObservableCollection<Top10Entry>(hitList);
         }
 
-        public static List<Top10Entry> GetInboundTop10()
+        public static ObservableCollection<Top10Entry> GetInboundTop10()
         {
             var hitList = new List<Top10Entry>();
             var inboundList = GetInboundList();
@@ -168,7 +174,7 @@ namespace FireDash
                 hitList.Add(new Top10Entry(record.Key, record.Value));
             }
             hitList.Sort();
-            return hitList;
+            return new ObservableCollection<Top10Entry>(hitList);
         }
     }
     /// <summary>
@@ -176,6 +182,12 @@ namespace FireDash
     /// </summary>
     public partial class MainWindow : Window
     {
+        private ObservableCollection<DropLogEntry> _droplist;
+        private ObservableCollection<DropLogEntry> _inbounddroplist;
+        private ObservableCollection<DropLogEntry> _outbounddroplist;
+        private ObservableCollection<Top10Entry> _inboundtop10;
+        private ObservableCollection<Top10Entry> _outboundtop10;
+
         public MainWindow()
         {
             InitializeComponent();
