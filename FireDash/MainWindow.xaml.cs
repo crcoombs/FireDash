@@ -116,33 +116,31 @@ namespace FireDash
             return logList;
         }
 
-        public static ObservableCollection<DropLogEntry> GetOutboundList()
+        public static ObservableCollection<DropLogEntry> GetOutboundList(ObservableCollection<DropLogEntry> logList)
         {
-            var logList = DropLog.GetList();
             return new ObservableCollection<DropLogEntry>(logList.Where(entry => entry.Direction.Equals("Outbound")));
         }
 
-        public static ObservableCollection<DropLogEntry> GetInboundList()
+        public static ObservableCollection<DropLogEntry> GetInboundList(ObservableCollection<DropLogEntry> logList)
         {
-            var logList = DropLog.GetList();
             return new ObservableCollection<DropLogEntry>(logList.Where(entry => entry.Direction.Equals("Inbound")));
         }
 
-        public static ObservableCollection<Top10Entry> GetOutboundTop10()
+        public static ObservableCollection<Top10Entry> GetTop10(ObservableCollection<DropLogEntry> logList, String property)
         {
             //List needed here because there's no sort method for ObservableCollections
             var hitList = new List<Top10Entry>();
-            var outboundList = GetOutboundList();
             Dictionary<string, int> addressHits = new Dictionary<string, int>();
-            foreach (var entry in outboundList)
+            foreach (var entry in logList)
             {
-                if (addressHits.ContainsKey(entry.DestAddress))
+                String propertyValue = (String) entry.GetType().GetProperty(property).GetValue(entry);
+                if (addressHits.ContainsKey(propertyValue))
                 {
-                    addressHits[entry.DestAddress] += 1;
+                    addressHits[propertyValue] += 1;
                 }
                 else
                 {
-                    addressHits[entry.DestAddress] = 1;
+                    addressHits[propertyValue] = 1;
                 }
             }
             foreach(var record in addressHits)
@@ -150,30 +148,10 @@ namespace FireDash
                 hitList.Add(new Top10Entry(record.Key, record.Value));
             }
             hitList.Sort();
-            return new ObservableCollection<Top10Entry>(hitList);
-        }
-
-        public static ObservableCollection<Top10Entry> GetInboundTop10()
-        {
-            var hitList = new List<Top10Entry>();
-            var inboundList = GetInboundList();
-            Dictionary<string, int> addressHits = new Dictionary<string, int>();
-            foreach (var entry in inboundList)
+            if(hitList.Count > 10)
             {
-                if (addressHits.ContainsKey(entry.SourceAddress))
-                {
-                    addressHits[entry.SourceAddress] += 1;
-                }
-                else
-                {
-                    addressHits[entry.SourceAddress] = 1;
-                }
+                hitList = hitList.GetRange(0, 10);
             }
-            foreach (var record in addressHits)
-            {
-                hitList.Add(new Top10Entry(record.Key, record.Value));
-            }
-            hitList.Sort();
             return new ObservableCollection<Top10Entry>(hitList);
         }
     }
@@ -205,10 +183,15 @@ namespace FireDash
 
         void RefreshLists()
         {
-            OutboundDropListGrid.ItemsSource = DropLog.GetOutboundList();
-            InboundDropListGrid.ItemsSource = DropLog.GetInboundList();
-            OutboundTop10Grid.ItemsSource = DropLog.GetOutboundTop10();
-            InboundTop10Grid.ItemsSource = DropLog.GetInboundTop10();
+            _droplist = DropLog.GetList();
+            _inbounddroplist = DropLog.GetInboundList(_droplist);
+            _outbounddroplist = DropLog.GetOutboundList(_droplist);
+            _inboundtop10 = DropLog.GetTop10(_inbounddroplist, "SourceAddress");
+            _outboundtop10 = DropLog.GetTop10(_outbounddroplist, "DestAddress");
+            OutboundDropListGrid.ItemsSource = _outbounddroplist;
+            InboundDropListGrid.ItemsSource = _inbounddroplist;
+            OutboundTop10Grid.ItemsSource = _outboundtop10;
+            InboundTop10Grid.ItemsSource = _inboundtop10;
         }
     }
 }
