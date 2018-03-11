@@ -1,9 +1,9 @@
-﻿<Window x:Class="WpfApp1.MainWindow"
+﻿<Window x:Class="FireDash.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:WpfApp1"
+        xmlns:local="clr-namespace:FireDash"
         mc:Ignorable="d"
         Title="FireDash" Height="750" Width="1000" Background="Black" Top="0" Left="0">
     <Window.Resources>
