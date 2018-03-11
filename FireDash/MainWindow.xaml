@@ -25,7 +25,6 @@
             <Setter Property="CanUserResizeRows" Value="False" />
             <Setter Property="IsReadOnly" Value="True" />
         </Style>
-
         <Style TargetType="DataGridColumnHeader">
             <Setter Property="Background" Value="{StaticResource HeaderBackgroundColor}" />
             <Setter Property="Foreground" Value="{StaticResource HeaderTextColor}" />
