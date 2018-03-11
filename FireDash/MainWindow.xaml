@@ -7,13 +7,16 @@
         mc:Ignorable="d"
         Title="FireDash" Height="750" Width="1000" Background="Black" Top="0" Left="0">
     <Window.Resources>
-        <SolidColorBrush x:Key="TextColor" Color="#FFC8C8C8"/>
-        <SolidColorBrush x:Key="BackgroundColor" Color="#FF1A1A1D"/>
+        <SolidColorBrush x:Key="DataTextColor" Color="#FFC8C8C8"/>
+        <SolidColorBrush x:Key="DataBackgroundColor" Color="#FF1A1A1D"/>
+        <SolidColorBrush x:Key="HeaderTextColor" Color="Black"/>
+        <SolidColorBrush x:Key="HeaderBackgroundColor" Color="#FF8F8F8F"/>
+        <SolidColorBrush x:Key="ScrollBarColor" Color="#FF3C3C3C"/>
         <Style TargetType="DataGrid">
-            <Setter Property="Background" Value="{StaticResource BackgroundColor}" />
-            <Setter Property="RowBackground" Value="{StaticResource BackgroundColor}" />
-            <Setter Property="Foreground" Value="{StaticResource TextColor}" />
-            <Setter Property="HorizontalGridLinesBrush" Value="{StaticResource TextColor}" />
+            <Setter Property="Background" Value="{StaticResource DataBackgroundColor}" />
+            <Setter Property="RowBackground" Value="{StaticResource DataBackgroundColor}" />
+            <Setter Property="Foreground" Value="{StaticResource DataTextColor}" />
+            <Setter Property="HorizontalGridLinesBrush" Value="{StaticResource DataTextColor}" />
             <Setter Property="HeadersVisibility" Value="Column" />
             <Setter Property="GridLinesVisibility" Value="Horizontal" />
             <Setter Property="BorderThickness" Value="0" />
@@ -22,12 +25,13 @@
             <Setter Property="CanUserResizeRows" Value="False" />
             <Setter Property="IsReadOnly" Value="True" />
         </Style>
+
         <Style TargetType="DataGridColumnHeader">
-            <Setter Property="Background" Value="#FF8F8F8F" />
-            <Setter Property="Foreground" Value="Black" />
+            <Setter Property="Background" Value="{StaticResource HeaderBackgroundColor}" />
+            <Setter Property="Foreground" Value="{StaticResource HeaderTextColor}" />
         </Style>
         <Style TargetType="ScrollBar">
-            <Setter Property="Background" Value= "#FF3C3C3C" />
+            <Setter Property="Background" Value= "{StaticResource ScrollBarColor}" />
         </Style>
     </Window.Resources>
     <Grid Margin="0">
