@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Diagnostics.Eventing.Reader;
 using System.Linq;
+using System.Reflection;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Xml.Linq;
 
@@ -169,11 +172,12 @@ namespace FireDash
         public MainWindow()
         {
             InitializeComponent();
-            this.KeyDown += new KeyEventHandler(MainWindow_KeyDown);
+            this.KeyDown += new KeyEventHandler(MainWindow_KeyUp);
+            SearchButton.Click += SearchButton_OnClick;
             RefreshLists();
         }
 
-        void MainWindow_KeyDown(object sender, KeyEventArgs e)
+        void MainWindow_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.F5)
             {
@@ -192,6 +196,41 @@ namespace FireDash
             InboundDropListGrid.ItemsSource = _inbounddroplist;
             OutboundTop10Grid.ItemsSource = _outboundtop10;
             InboundTop10Grid.ItemsSource = _inboundtop10;
+        }
+
+        void SearchButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            String[] searchArgs = SearchBox.Text.Split('=');
+            if (searchArgs.Count() != 2)
+            {
+                SearchBox.Text = "";
+                OutboundDropListGrid.ItemsSource = _outbounddroplist;
+                return;
+            }
+            // Collection which will take your Filter
+            var _itemSourceList = new CollectionViewSource() { Source = _outbounddroplist };
+
+            //now we add our Filter
+            _itemSourceList.Filter += (sender2, e2) => propertyfilter(sender2, e2, searchArgs);
+
+            // ICollectionView the View/UI part 
+            ICollectionView Itemlist = _itemSourceList.View;
+
+            OutboundDropListGrid.ItemsSource = Itemlist;
+        }
+
+        private void propertyfilter(object sender, FilterEventArgs e, String[] searchArgs)
+        {
+            var entry = e.Item as DropLogEntry;
+            var propInfo = entry.GetType().GetProperty(searchArgs[0]);        
+                if (propInfo.GetValue(entry).ToString() == searchArgs[1])
+                {
+                    e.Accepted = true;
+                }
+                else
+                {
+                    e.Accepted = false;
+                }
         }
     }
 }

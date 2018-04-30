@@ -35,6 +35,7 @@
     </Window.Resources>
     <Grid Margin="0">
         <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
@@ -43,9 +44,11 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <DataGrid x:Name="InboundDropListGrid" Grid.ColumnSpan="2" />
-        <DataGrid x:Name="OutboundDropListGrid" Grid.ColumnSpan="2" Grid.Row="1" />
-        <DataGrid x:Name="InboundTop10Grid" Grid.Row="2"/>
-        <DataGrid x:Name="OutboundTop10Grid" Grid.Row="2" Grid.Column="1"/>
+        <TextBox x:Name="SearchBox" Grid.ColumnSpan="2" Width="600" HorizontalAlignment="Left"/>
+        <Button x:Name="SearchButton" Grid.Column="1" HorizontalAlignment="Right" Width="100" IsDefault="True"/>
+        <DataGrid x:Name="InboundDropListGrid" Grid.ColumnSpan="2" Grid.Row="1" />
+        <DataGrid x:Name="OutboundDropListGrid" Grid.ColumnSpan="2" Grid.Row="2" />
+        <DataGrid x:Name="InboundTop10Grid" Grid.Row="3"/>
+        <DataGrid x:Name="OutboundTop10Grid" Grid.Row="3" Grid.Column="1"/>
     </Grid>
 </Window>
