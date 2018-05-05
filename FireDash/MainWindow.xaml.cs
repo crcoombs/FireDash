@@ -222,14 +222,17 @@ namespace FireDash
         private void propertyfilter(object sender, FilterEventArgs e, String[] searchArgs)
         {
             var entry = e.Item as DropLogEntry;
-            var propInfo = entry.GetType().GetProperty(searchArgs[0]);        
-                if (propInfo.GetValue(entry).ToString() == searchArgs[1])
+            var propInfo = entry.GetType().GetProperty(searchArgs[0]);
+                if (propInfo != null)
                 {
-                    e.Accepted = true;
-                }
-                else
-                {
-                    e.Accepted = false;
+                    if (propInfo.GetValue(entry).ToString() == searchArgs[1])
+                    {
+                        e.Accepted = true;
+                    }
+                    else
+                    {
+                        e.Accepted = false;
+                    }
                 }
         }
     }

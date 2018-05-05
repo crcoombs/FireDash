@@ -32,10 +32,19 @@
         <Style TargetType="ScrollBar">
             <Setter Property="Background" Value= "{StaticResource ScrollBarColor}" />
         </Style>
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource DataBackgroundColor}" />
+            <Setter Property="Foreground" Value="{StaticResource DataTextColor}" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource DataBackgroundColor}" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
     </Window.Resources>
     <Grid Margin="0">
         <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="20"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
@@ -44,8 +53,8 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <TextBox x:Name="SearchBox" Grid.ColumnSpan="2" Width="600" HorizontalAlignment="Left"/>
-        <Button x:Name="SearchButton" Grid.Column="1" HorizontalAlignment="Right" Width="100" IsDefault="True"/>
+        <TextBox x:Name="SearchBox" Grid.ColumnSpan="2" MaxLines="1" Margin="0,0,110,0"/>
+        <Button x:Name="SearchButton" Grid.Column="1" HorizontalAlignment="Right" Width="100" IsDefault="True" Content="Search" />
         <DataGrid x:Name="InboundDropListGrid" Grid.ColumnSpan="2" Grid.Row="1" />
         <DataGrid x:Name="OutboundDropListGrid" Grid.ColumnSpan="2" Grid.Row="2" />
         <DataGrid x:Name="InboundTop10Grid" Grid.Row="3"/>
