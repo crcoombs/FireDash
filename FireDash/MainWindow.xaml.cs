@@ -193,6 +193,7 @@ namespace FireDash
             _inboundtop10 = DropLog.GetTop10(_inbounddroplist, "SourceAddress");
             _outboundtop10 = DropLog.GetTop10(_outbounddroplist, "DestAddress");
             DropListGrid.ItemsSource = _droplist;
+            SearchButton_OnClick(null,null);
             OutboundTop10Grid.ItemsSource = _outboundtop10;
             InboundTop10Grid.ItemsSource = _inboundtop10;
         }
