@@ -192,8 +192,7 @@ namespace FireDash
             _outbounddroplist = DropLog.GetOutboundList(_droplist);
             _inboundtop10 = DropLog.GetTop10(_inbounddroplist, "SourceAddress");
             _outboundtop10 = DropLog.GetTop10(_outbounddroplist, "DestAddress");
-            OutboundDropListGrid.ItemsSource = _outbounddroplist;
-            InboundDropListGrid.ItemsSource = _inbounddroplist;
+            DropListGrid.ItemsSource = _droplist;
             OutboundTop10Grid.ItemsSource = _outboundtop10;
             InboundTop10Grid.ItemsSource = _inboundtop10;
         }
@@ -204,11 +203,11 @@ namespace FireDash
             if (searchArgs.Count() != 2)
             {
                 SearchBox.Text = "";
-                OutboundDropListGrid.ItemsSource = _outbounddroplist;
+                DropListGrid.ItemsSource = _droplist;
                 return;
             }
             // Collection which will take your Filter
-            var _itemSourceList = new CollectionViewSource() { Source = _outbounddroplist };
+            var _itemSourceList = new CollectionViewSource() { Source = _droplist };
 
             //now we add our Filter
             _itemSourceList.Filter += (sender2, e2) => propertyfilter(sender2, e2, searchArgs);
@@ -216,7 +215,7 @@ namespace FireDash
             // ICollectionView the View/UI part 
             ICollectionView Itemlist = _itemSourceList.View;
 
-            OutboundDropListGrid.ItemsSource = Itemlist;
+            DropListGrid.ItemsSource = Itemlist;
         }
 
         private void propertyfilter(object sender, FilterEventArgs e, String[] searchArgs)
