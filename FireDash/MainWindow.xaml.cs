@@ -225,7 +225,7 @@ namespace FireDash
             var propInfo = entry.GetType().GetProperty(searchArgs[0]);
                 if (propInfo != null)
                 {
-                    if (propInfo.GetValue(entry).ToString() == searchArgs[1])
+                    if (propInfo.GetValue(entry).ToString().Equals(searchArgs[1], StringComparison.OrdinalIgnoreCase))
                     {
                         e.Accepted = true;
                     }
