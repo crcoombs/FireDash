@@ -81,6 +81,7 @@ namespace FireDash
 
     public class DropLog
     {
+        // Converts Event Log entries into a Collection for display
         public static ObservableCollection<DropLogEntry> GetList()
         {
             var tenMinutes = DateTime.UtcNow.AddMinutes(-10).ToString("o");
@@ -119,19 +120,22 @@ namespace FireDash
             return logList;
         }
 
+        // Gets all outbound events
         public static ObservableCollection<DropLogEntry> GetOutboundList(ObservableCollection<DropLogEntry> logList)
         {
             return new ObservableCollection<DropLogEntry>(logList.Where(entry => entry.Direction.Equals("Outbound")));
         }
 
+        // Gets all inbound evernts
         public static ObservableCollection<DropLogEntry> GetInboundList(ObservableCollection<DropLogEntry> logList)
         {
             return new ObservableCollection<DropLogEntry>(logList.Where(entry => entry.Direction.Equals("Inbound")));
         }
 
+        // Generates a Top 10 list for a specified property
         public static ObservableCollection<Top10Entry> GetTop10(ObservableCollection<DropLogEntry> logList, String property)
         {
-            //List needed here because there's no sort method for ObservableCollections
+            // List needed here because there's no sort method for ObservableCollections
             var hitList = new List<Top10Entry>();
             Dictionary<string, int> addressHits = new Dictionary<string, int>();
             foreach (var entry in logList)
@@ -177,6 +181,7 @@ namespace FireDash
             RefreshLists();
         }
 
+        // F5 to refresh
         void MainWindow_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.F5)
@@ -185,6 +190,7 @@ namespace FireDash
             }
         }
 
+        // Gets fresh list
         void RefreshLists()
         {
             _droplist = DropLog.GetList();
@@ -198,6 +204,8 @@ namespace FireDash
             InboundTop10Grid.ItemsSource = _inboundtop10;
         }
 
+        // Filters the main list based on text box
+        // Filter format: property1=value1 property2=value2
         void SearchButton_OnClick(object sender, RoutedEventArgs e)
         {
             var _itemSourceList = new CollectionViewSource() { Source = _droplist };
@@ -207,27 +215,27 @@ namespace FireDash
                 String[] searchArgs = searchTerm.Split('=');
                 _itemSourceList.Filter += (sender2, e2) => propertyfilter(sender2, e2, searchArgs);
             }
-            // ICollectionView the View/UI part 
             ICollectionView Itemlist = _itemSourceList.View;
 
             DropListGrid.ItemsSource = Itemlist;
         }
 
+        // Filters a CollectionViewSource by searching for a specified combination of property name and value
         private void propertyfilter(object sender, FilterEventArgs e, String[] searchArgs)
         {
             var entry = e.Item as DropLogEntry;
             var propInfo = entry.GetType().GetProperty(searchArgs[0], BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
-                if (propInfo != null)
+            if (propInfo != null)
+            {
+                if (propInfo.GetValue(entry).ToString().Equals(searchArgs[1], StringComparison.OrdinalIgnoreCase))
                 {
-                    if (propInfo.GetValue(entry).ToString().Equals(searchArgs[1], StringComparison.OrdinalIgnoreCase))
-                    {
-                        e.Accepted = true;
-                    }
-                    else
-                    {
-                        e.Accepted = false;
-                    }
+                    e.Accepted = true;
                 }
+                else
+                {
+                    e.Accepted = false;
+                }
+            }
         }
     }
 }
