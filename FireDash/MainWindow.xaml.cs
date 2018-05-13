@@ -200,19 +200,13 @@ namespace FireDash
 
         void SearchButton_OnClick(object sender, RoutedEventArgs e)
         {
-            String[] searchArgs = SearchBox.Text.Split('=');
-            if (searchArgs.Count() != 2)
-            {
-                SearchBox.Text = "";
-                DropListGrid.ItemsSource = _droplist;
-                return;
-            }
-            // Collection which will take your Filter
             var _itemSourceList = new CollectionViewSource() { Source = _droplist };
-
-            //now we add our Filter
-            _itemSourceList.Filter += (sender2, e2) => propertyfilter(sender2, e2, searchArgs);
-
+            String[] searchTerms = SearchBox.Text.Split(' ');          
+            foreach (String searchTerm in searchTerms)
+            {
+                String[] searchArgs = searchTerm.Split('=');
+                _itemSourceList.Filter += (sender2, e2) => propertyfilter(sender2, e2, searchArgs);
+            }
             // ICollectionView the View/UI part 
             ICollectionView Itemlist = _itemSourceList.View;
 
@@ -222,7 +216,7 @@ namespace FireDash
         private void propertyfilter(object sender, FilterEventArgs e, String[] searchArgs)
         {
             var entry = e.Item as DropLogEntry;
-            var propInfo = entry.GetType().GetProperty(searchArgs[0]);
+            var propInfo = entry.GetType().GetProperty(searchArgs[0], BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
                 if (propInfo != null)
                 {
                     if (propInfo.GetValue(entry).ToString().Equals(searchArgs[1], StringComparison.OrdinalIgnoreCase))
