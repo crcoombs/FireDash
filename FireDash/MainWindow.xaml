@@ -12,6 +12,7 @@
         <SolidColorBrush x:Key="HeaderTextColor" Color="Black"/>
         <SolidColorBrush x:Key="HeaderBackgroundColor" Color="#FF8F8F8F"/>
         <SolidColorBrush x:Key="ScrollBarColor" Color="#FF3C3C3C"/>
+        <SolidColorBrush x:Key="BorderColor" Color="#FF7AC1FF"/>
         <Style TargetType="DataGrid">
             <Setter Property="Background" Value="{StaticResource DataBackgroundColor}" />
             <Setter Property="RowBackground" Value="{StaticResource DataBackgroundColor}" />
@@ -45,6 +46,9 @@
             <Setter Property="Background" Value="{StaticResource DataBackgroundColor}" />
             <Setter Property="Foreground" Value="{StaticResource DataTextColor}" />
         </Style>
+        <Style TargetType="Border">
+            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}" />
+        </Style>
     </Window.Resources>
     <Grid Margin="0">
         <Grid.RowDefinitions>
@@ -59,10 +63,16 @@
         </Grid.ColumnDefinitions>
         <TextBox x:Name="SearchBox" Grid.ColumnSpan="2" MaxLines="1" Margin="0,0,110,0"/>
         <Button x:Name="SearchButton" Grid.Column="1" HorizontalAlignment="Right" Width="100" IsDefault="True" Content="Search" />
-        <DataGrid x:Name="DropListGrid" Grid.ColumnSpan="2" Grid.Row="1" />
-        <Label x:Name="InboundTop10Label" Grid.Row="2" Content="Top Inbound Sources" />
+        <Border BorderThickness="0, 0, 0, 1" Grid.Row="1" Grid.ColumnSpan="2">
+            <DataGrid x:Name="DropListGrid" Grid.ColumnSpan="2" Grid.Row="1" />
+        </Border>
+        <Border BorderThickness="0 0 0.55 0" Grid.Row="2">
+            <Label x:Name="InboundTop10Label" Grid.Row="2" Content="Top Inbound Sources" />
+        </Border>
         <Label x:Name="OutboundTop10Label" Grid.Row="2" Grid.Column="1" Content="Top Outbound Destinations" />
-        <DataGrid x:Name="InboundTop10Grid" Grid.Row="3"/>
+        <Border BorderThickness="0 0 0.55 0"  Grid.Row="3">
+            <DataGrid x:Name="InboundTop10Grid" Grid.Row="3"/>
+        </Border>
         <DataGrid x:Name="OutboundTop10Grid" Grid.Row="3" Grid.Column="1"/>
     </Grid>
 </Window>
