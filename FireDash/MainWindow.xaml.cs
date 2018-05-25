@@ -230,7 +230,6 @@ namespace FireDash
         {
             var entry = e.Item as DropLogEntry;
             var propInfo = entry.GetType().GetProperty(searchArgs[0], BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
-            entry.
             if (propInfo != null)
             {
                 if (propInfo.GetValue(entry).ToString().Equals(searchArgs[1], StringComparison.OrdinalIgnoreCase))
