@@ -214,7 +214,7 @@ namespace FireDash
         void SearchButton_OnClick(object sender, RoutedEventArgs e)
         {
             var _itemSourceList = new CollectionViewSource() { Source = _droplist };
-            String[] searchTerms = SearchBox.Text.Split(' ');          
+            String[] searchTerms = SearchBox.Text.Split(',');          
             foreach (String searchTerm in searchTerms)
             {
                 String[] searchArgs = searchTerm.Split('=');
@@ -228,11 +228,29 @@ namespace FireDash
         // Filters a CollectionViewSource by searching for a specified combination of property name and value
         private void propertyfilter(object sender, FilterEventArgs e, String[] searchArgs)
         {
+            if (searchArgs[0] == "")
+            {
+                e.Accepted = true;
+                return;
+            }
+            String propertyName = searchArgs[0];
+            String propertyValue = searchArgs[1];
             var entry = e.Item as DropLogEntry;
-            var propInfo = entry.GetType().GetProperty(searchArgs[0], BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
+            foreach (var property in entry.GetType().GetProperties())
+            {
+                DisplayNameAttribute displayname = property.GetCustomAttribute(typeof(DisplayNameAttribute)) as DisplayNameAttribute;
+                if (displayname != null)
+                { 
+                    if (displayname.DisplayName.Equals(propertyName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        propertyName = property.Name;
+                    }
+                }
+            }
+            var propInfo = entry.GetType().GetProperty(propertyName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
             if (propInfo != null)
             {
-                if (propInfo.GetValue(entry).ToString().Equals(searchArgs[1], StringComparison.OrdinalIgnoreCase))
+                if (propInfo.GetValue(entry).ToString().Equals(propertyValue, StringComparison.OrdinalIgnoreCase))
                 {
                     e.Accepted = true;
                 }
