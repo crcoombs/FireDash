@@ -31,11 +31,16 @@ namespace FireDash
         };
         private string _direction;
 
+        [DisplayName("Time")]
         public DateTime EventTime { get; set; }
         public string Application { get; set; }
+        [DisplayName("Source Address")]
         public string SourceAddress { get; set; }
+        [DisplayName("Source Port")]
         public string SourcePort { get; set; }
+        [DisplayName("Destination Address")]
         public string DestAddress { get; set; }
+        [DisplayName("Destination Port")]
         public string DestPort { get; set; }
         public string Protocol { get => _protocols[_protocol]; set => _protocol = value; }
         public string Direction { get => _directions[_direction]; set => _direction = value; }
@@ -225,6 +230,7 @@ namespace FireDash
         {
             var entry = e.Item as DropLogEntry;
             var propInfo = entry.GetType().GetProperty(searchArgs[0], BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
+            entry.
             if (propInfo != null)
             {
                 if (propInfo.GetValue(entry).ToString().Equals(searchArgs[1], StringComparison.OrdinalIgnoreCase))
@@ -235,6 +241,14 @@ namespace FireDash
                 {
                     e.Accepted = false;
                 }
+            }
+        }
+
+        private void DropListGrid_AutoGeneratingColumn(object sender, System.Windows.Controls.DataGridAutoGeneratingColumnEventArgs e)
+        {
+            if (e.PropertyDescriptor is PropertyDescriptor descriptor)
+            {
+                e.Column.Header = descriptor.DisplayName ?? descriptor.Name;
             }
         }
     }

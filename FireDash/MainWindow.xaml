@@ -65,7 +65,7 @@
         <TextBox x:Name="SearchBox" Grid.ColumnSpan="2" MaxLines="1" Margin="0, 0, 110, 0" />
         <Button x:Name="SearchButton" Grid.Column="1" HorizontalAlignment="Right" Width="100" IsDefault="True" Content="Search" />
         <Border BorderThickness="0 0 0 1" Grid.Row="1" Grid.ColumnSpan="2">
-            <DataGrid x:Name="DropListGrid" Grid.ColumnSpan="2" Grid.Row="1"/>
+            <DataGrid x:Name="DropListGrid" Grid.ColumnSpan="2" Grid.Row="1" AutoGeneratingColumn="DropListGrid_AutoGeneratingColumn"/>
         </Border>
         <Border BorderThickness="0 0 0.55 0" Grid.Row="2"><!--0.55 to match thickness of horizontal line at 1-->
             <Label x:Name="InboundTop10Label" Grid.Row="2" Content="Top Inbound Sources" />
