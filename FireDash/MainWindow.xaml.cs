@@ -52,11 +52,17 @@ namespace FireDash
         }
 
         // Filters the main list based on text box
-        // Filter format: property1=value1 property2=value2
+        // Filter format: property1=value1,property2=value2
         void SearchButton_OnClick(object sender, RoutedEventArgs e)
         {
+            String[] searchTerms = SearchBox.Text.Split(',');
+            if (searchTerms.Length == 0)
+            {
+                DropListGrid.ItemsSource = _dropList;
+                return;
+            }
+
             CollectionViewSource _itemSourceList = new CollectionViewSource() { Source = _dropList };
-            String[] searchTerms = SearchBox.Text.Split(',');          
             foreach (String searchTerm in searchTerms)
             {
                 String[] searchArgs = searchTerm.Split('=');
@@ -70,12 +76,12 @@ namespace FireDash
         // Filters a CollectionViewSource by searching for a specified combination of property name and value
         private void PropertyFilter(object sender, FilterEventArgs e, String[] searchArgs)
         {
-            if (searchArgs[0] == "")
+            if (searchArgs.Length != 2)
             {
-                e.Accepted = true;
+                SearchBox.Clear();
                 return;
             }
-
+            
             String propertyName = searchArgs[0];
             String propertyValue = searchArgs[1];
             DropLogEntry entry = e.Item as DropLogEntry;
@@ -88,6 +94,7 @@ namespace FireDash
                     if (displayname.DisplayName.Equals(propertyName, StringComparison.OrdinalIgnoreCase))
                     {
                         propertyName = property.Name;
+                        break;
                     }
                 }
             }
@@ -103,6 +110,11 @@ namespace FireDash
                 {
                     e.Accepted = false;
                 }
+            }
+            else
+            {
+                SearchBox.Clear();
+                return;
             }
         }
 
