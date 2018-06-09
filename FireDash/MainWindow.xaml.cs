@@ -55,7 +55,7 @@ namespace FireDash
         // Filter format: property1=value1 property2=value2
         void SearchButton_OnClick(object sender, RoutedEventArgs e)
         {
-            var _itemSourceList = new CollectionViewSource() { Source = _dropList };
+            CollectionViewSource _itemSourceList = new CollectionViewSource() { Source = _dropList };
             String[] searchTerms = SearchBox.Text.Split(',');          
             foreach (String searchTerm in searchTerms)
             {
@@ -78,9 +78,9 @@ namespace FireDash
 
             String propertyName = searchArgs[0];
             String propertyValue = searchArgs[1];
-            var entry = e.Item as DropLogEntry;
+            DropLogEntry entry = e.Item as DropLogEntry;
 
-            foreach (var property in entry.GetType().GetProperties())
+            foreach (PropertyInfo property in entry.GetType().GetProperties())
             {
                 DisplayNameAttribute displayname = property.GetCustomAttribute(typeof(DisplayNameAttribute)) as DisplayNameAttribute;
                 if (displayname != null)
@@ -92,7 +92,7 @@ namespace FireDash
                 }
             }
 
-            var propInfo = entry.GetType().GetProperty(propertyName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
+            PropertyInfo propInfo = entry.GetType().GetProperty(propertyName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
             if (propInfo != null)
             {
                 if (propInfo.GetValue(entry).ToString().Equals(propertyValue, StringComparison.OrdinalIgnoreCase))
